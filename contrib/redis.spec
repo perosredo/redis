@@ -61,8 +61,9 @@ Header files for developing Redis modules.
 export CFLAGS="$RPM_OPT_FLAGS -fPIC"
 export LDFLAGS="$RPM_LD_FLAGS"
 
-# Build all dependencies first
+# Build all dependencies first (including SSL support for hiredis)
 make %{?_smp_mflags} -C deps
+make %{?_smp_mflags} -C deps hiredis USE_SSL=1
 
 # Build Redis using the standard build system
 %make_build \
