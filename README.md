@@ -2,6 +2,9 @@
 
 https://copr.fedorainfracloud.org/coprs/perosredo/redis-alma10/
 
+
+
+
 This document serves as both a quick start guide to Redis and a detailed resource for building it from source.
 
 - New to Redis? Start with [What is Redis](#what-is-redis) and [Getting Started](#getting-started)
