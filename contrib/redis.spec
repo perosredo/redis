@@ -75,7 +75,8 @@ make %{?_smp_mflags} -C deps BUILD_TLS=yes
     V=1
 
 %install
-%make_install PREFIX=%{buildroot}%{_prefix} INSTALL_BIN=%{buildroot}%{_bindir}
+# Install needs BUILD_TLS too for proper linking
+%make_install PREFIX=%{buildroot}%{_prefix} INSTALL_BIN=%{buildroot}%{_bindir} BUILD_TLS=yes
 
 # Install configuration file
 install -d %{buildroot}%{_sysconfdir}
