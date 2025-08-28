@@ -137,7 +137,7 @@ exit 0
 %systemd_postun_with_restart %{name}.service
 
 %files
-%license COPYING
+%license LICENSE.txt
 %doc README.md
 %config(noreplace) %{_sysconfdir}/%{name}.conf
 %{_unitdir}/%{name}.service
