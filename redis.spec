@@ -58,6 +58,10 @@ Header files for developing Redis modules.
 export CFLAGS="$RPM_OPT_FLAGS -fPIC"
 export LDFLAGS="$RPM_LD_FLAGS"
 
+# Build dependencies first
+make %{?_smp_mflags} -C deps all
+
+# Build Redis with jemalloc
 %make_build \
     PREFIX=%{_prefix} \
     INSTALL_BIN=%{_bindir} \
