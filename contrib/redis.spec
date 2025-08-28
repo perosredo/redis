@@ -85,9 +85,9 @@ install -p -m 0644 redis.conf %{buildroot}%{_sysconfdir}/%{name}.conf
 # Modify config for systemd
 sed -i 's/^daemonize yes/daemonize no/' %{buildroot}%{_sysconfdir}/%{name}.conf
 sed -i 's/^# supervised auto/supervised systemd/' %{buildroot}%{_sysconfdir}/%{name}.conf
-sed -i 's/^dir \.\/dir \/var\/lib\/redis/' %{buildroot}%{_sysconfdir}/%{name}.conf
-sed -i 's/^pidfile .*$/pidfile \/var\/run\/redis\/redis-server.pid/' %{buildroot}%{_sysconfdir}/%{name}.conf
-sed -i 's/^logfile .*$/logfile \/var\/log\/redis\/redis-server.log/' %{buildroot}%{_sysconfdir}/%{name}.conf
+sed -i 's|^dir \./|dir /var/lib/redis/|' %{buildroot}%{_sysconfdir}/%{name}.conf
+sed -i 's|^pidfile .*$|pidfile /var/run/redis/redis-server.pid|' %{buildroot}%{_sysconfdir}/%{name}.conf
+sed -i 's|^logfile .*$|logfile /var/log/redis/redis-server.log|' %{buildroot}%{_sysconfdir}/%{name}.conf
 
 # Create systemd service file
 install -d %{buildroot}%{_unitdir}
