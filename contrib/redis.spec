@@ -141,8 +141,7 @@ exit 0
 %doc README.md
 %config(noreplace) %{_sysconfdir}/%{name}.conf
 %{_unitdir}/%{name}.service
-%{_bindir}/%{name}-*
-%{_bindir}/%{name}-server
+%{_bindir}/redis-*
 %attr(0755,%{redis_user},%{redis_group}) %dir %{_localstatedir}/lib/%{name}
 %attr(0755,%{redis_user},%{redis_group}) %dir %{_localstatedir}/log/%{name}
 %attr(0755,%{redis_user},%{redis_group}) %dir %{_localstatedir}/run/%{name}
