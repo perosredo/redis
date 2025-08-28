@@ -17,6 +17,7 @@ URL:               https://redis.io
 Source0:           https://github.com/redis/redis/archive/%{upstream_ver}.tar.gz
 
 BuildRequires:     gcc
+BuildRequires:     gcc-c++
 BuildRequires:     make
 BuildRequires:     systemd-devel
 BuildRequires:     openssl-devel >= 1.1
@@ -60,8 +61,8 @@ Header files for developing Redis modules.
 export CFLAGS="$RPM_OPT_FLAGS -fPIC"
 export LDFLAGS="$RPM_LD_FLAGS"
 
-# Build dependencies first (jemalloc, lua, hiredis, linenoise)
-make %{?_smp_mflags} -C deps jemalloc lua hiredis linenoise
+# Build all dependencies first
+make %{?_smp_mflags} -C deps
 
 # Build Redis using the standard build system
 %make_build \
@@ -76,22 +77,16 @@ make %{?_smp_mflags} -C deps jemalloc lua hiredis linenoise
 %install
 %make_install PREFIX=%{buildroot}%{_prefix} INSTALL_BIN=%{buildroot}%{_bindir}
 
-# Create basic configuration
+# Install configuration file
 install -d %{buildroot}%{_sysconfdir}
-cat > %{buildroot}%{_sysconfdir}/%{name}.conf << EOF
-# Redis configuration file
-port 6379
-bind 127.0.0.1
-timeout 0
-tcp-keepalive 300
-daemonize no
-supervised systemd
-pidfile /var/run/redis/redis-server.pid
-loglevel notice
-logfile /var/log/redis/redis-server.log
-databases 16
-dir /var/lib/redis
-EOF
+install -p -m 0644 redis.conf %{buildroot}%{_sysconfdir}/%{name}.conf
+
+# Modify config for systemd
+sed -i 's/^daemonize yes/daemonize no/' %{buildroot}%{_sysconfdir}/%{name}.conf
+sed -i 's/^# supervised auto/supervised systemd/' %{buildroot}%{_sysconfdir}/%{name}.conf
+sed -i 's/^dir \.\/dir \/var\/lib\/redis/' %{buildroot}%{_sysconfdir}/%{name}.conf
+sed -i 's/^pidfile .*$/pidfile \/var\/run\/redis\/redis-server.pid/' %{buildroot}%{_sysconfdir}/%{name}.conf
+sed -i 's/^logfile .*$/logfile \/var\/log\/redis\/redis-server.log/' %{buildroot}%{_sysconfdir}/%{name}.conf
 
 # Create systemd service file
 install -d %{buildroot}%{_unitdir}
@@ -114,6 +109,10 @@ RuntimeDirectoryMode=0755
 [Install]
 WantedBy=multi-user.target
 EOF
+
+# Install headers for modules
+install -d %{buildroot}%{_includedir}
+install -p -m 0644 src/redismodule.h %{buildroot}%{_includedir}/
 
 # Create directories
 install -d %{buildroot}%{_localstatedir}/lib/%{name}
@@ -142,6 +141,7 @@ exit 0
 %config(noreplace) %{_sysconfdir}/%{name}.conf
 %{_unitdir}/%{name}.service
 %{_bindir}/%{name}-*
+%{_bindir}/%{name}-server
 %attr(0755,%{redis_user},%{redis_group}) %dir %{_localstatedir}/lib/%{name}
 %attr(0755,%{redis_user},%{redis_group}) %dir %{_localstatedir}/log/%{name}
 %attr(0755,%{redis_user},%{redis_group}) %dir %{_localstatedir}/run/%{name}
