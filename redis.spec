@@ -1,9 +1,11 @@
-# Spec file for Redis 8.2.1
-# Simplified version for COPR build
+# Redis 8.2.1 for EPEL 10
+# Based on stable release tarball
 
 %global upstream_ver    8.2.1
 %global redis_user      redis
 %global redis_group     %{redis_user}
+
+%global debug_package %{nil}
 
 Name:              redis
 Version:           %{upstream_ver}
@@ -12,7 +14,7 @@ Summary:           A persistent key-value database
 License:           RSALv2 and BSD and MIT
 URL:               https://redis.io
 
-Source0:           https://github.com/redis/redis/archive/refs/tags/%{upstream_ver}.tar.gz#/%{name}-%{upstream_ver}.tar.gz
+Source0:           https://github.com/redis/redis/releases/download/%{upstream_ver}/redis-%{upstream_ver}.tar.gz
 
 BuildRequires:     gcc
 BuildRequires:     make
@@ -58,17 +60,15 @@ Header files for developing Redis modules.
 export CFLAGS="$RPM_OPT_FLAGS -fPIC"
 export LDFLAGS="$RPM_LD_FLAGS"
 
-# Build dependencies first
-make %{?_smp_mflags} -C deps all
-
-# Build Redis with jemalloc
+# Build Redis using the standard build system
 %make_build \
     PREFIX=%{_prefix} \
     INSTALL_BIN=%{_bindir} \
     OPTIMIZATION="$CFLAGS" \
     DEBUG="" \
     USE_SYSTEMD=yes \
-    BUILD_TLS=yes
+    BUILD_TLS=yes \
+    V=1
 
 %install
 %make_install PREFIX=%{buildroot}%{_prefix} INSTALL_BIN=%{buildroot}%{_bindir}
