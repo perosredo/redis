@@ -1,4 +1,6 @@
-[![codecov](https://codecov.io/github/redis/redis/graph/badge.svg?token=6bVHb5fRuz)](https://codecov.io/github/redis/redis)
+## repo for automated copr builds for alma linux 10 
+
+https://copr.fedorainfracloud.org/coprs/perosredo/redis-alma10/
 
 This document serves as both a quick start guide to Redis and a detailed resource for building it from source.
 
